@@ -1,0 +1,800 @@
+Appendix A VLANs Configurations
+
+FREETOWN_NET
+
+!
+en
+conf t
+vlan 10
+name VOICE
+vlan 20
+name DATA
+vlan 30
+name SERVER
+exit
+
+int range fa0/2-3
+switchport mode access
+switchport access vlan 20
+switchport voice vlan 10 
+exit
+int range fa0/4-5
+switchport mode access
+switchport access vlan 30
+
+exit
+int fa0/1
+switchport mode trunk
+!
+
+NORTH_NET
+
+!
+vlan 10
+name VOICE
+vlan 20
+exit
+
+int range fa0/2-3
+switchport mode access
+switchport access vlan 20
+switchport voice vlan 10 
+exit
+
+int fa0/1
+switchport mode trunk
+!
+
+EAST_NET
+
+!
+vlan 10
+name VOICE
+vlan 20
+exit
+
+int range fa0/2-3
+switchport mode access
+switchport access vlan 20
+switchport voice vlan 10 
+exit
+
+int fa0/1
+switchport mode trunk
+!
+
+SOUTH_NET
+
+!
+vlan 10
+name VOICE
+vlan 20
+exit
+
+int range fa0/2-3
+switchport mode access
+switchport access vlan 20
+switchport voice vlan 10 
+exit
+
+int fa0/1
+switchport mode trunk
+!
+
+802.1Q Configurations
+
+GATEWAY_FREETOWN
+
+!
+int fa0/1.10
+encapsulation dot1Q 10
+ip address 172.17.2.1 255.255.255.0
+exit
+
+int fa0/1.20
+encapsulation dot1Q 20
+ip address 172.17.4.1 255.255.252.0
+exit
+
+int fa0/1.30
+encapsulation dot1Q 30
+ip address 172.17.18.1 255.255.255.0
+exit
+int fa0/1
+no shut
+!
+
+GATEWAY_NORTH
+
+!
+int fa0/1.10
+encapsulation dot1Q 10
+ip address 172.17.6.1 255.255.255.0
+exit
+
+int fa0/1.20
+encapsulation dot1Q 20
+ip address 172.17.8.1 255.255.252.0
+exit
+
+int fa0/1
+no shut
+!
+
+GATEWAY_EAST
+
+!
+int fa0/1.10
+encapsulation dot1Q 10
+ip address 172.17.10.1 255.255.255.0
+exit
+
+int fa0/1.20
+encapsulation dot1Q 20
+ip address 172.17.12.1 255.255.252.0
+exit
+
+int fa0/1
+no shut
+!
+
+GATEWAY_SOUTH
+
+!
+int fa0/1.10
+encapsulation dot1Q 10
+ip address 172.17.14.1 255.255.255.0
+exit
+
+int fa0/1.20
+encapsulation dot1Q 20
+ip address 172.17.16.1 255.255.252.0
+exit
+
+int fa0/1
+no shut
+!
+
+DHCP Configurations
+
+GATEWAY_FREETOWN
+
+!
+ip dhcp excluded-address 172.17.2.1
+ip dhcp pool VOICE 
+network 172.17.2.0 255.255.255.0
+default-router 172.17.2.1
+option 150 ip 172.17.2.1
+exit
+
+ip dhcp excluded-address 172.17.4.1 172.17.4.19
+ip dhcp pool DATA20 
+network 172.17.4.0 255.255.252.0
+default-router 172.17.4.1
+dns-server 172.17.18.2
+exit
+
+ip dhcp excluded-address 172.17.18.1
+ip dhcp pool SERVER30 
+network 172.17.18.0 255.255.255.0
+default-router 172.17.18.1
+dns-server 172.17.18.2
+!
+
+GATEWAY_NORTH
+
+!
+ip dhcp excluded-address 172.17.6.1
+ip dhcp pool VOICE 
+network 172.17.6.0 255.255.255.0
+default-router 172.17.6.1
+option 150 ip 172.17.6.1
+exit
+
+
+ip dhcp excluded-address 172.17.8.1 172.17.8.19
+ip dhcp pool DATA20 
+network 172.17.8.0 255.255.252.0
+default-router 172.17.8.1
+dns-server 172.17.18.2
+exit
+
+!
+
+GATEWAY_EAST
+
+!
+ip dhcp excluded-address 172.17.10.1
+ip dhcp pool VOICE 
+network 172.17.10.0 255.255.255.0
+default-router 172.17.10.1
+option 150 ip 172.17.10.1
+exit
+
+ip dhcp excluded-address 172.17.12.1 172.17.12.19
+ip dhcp pool DATA20 
+network 172.17.12.0 255.255.252.0
+default-router 172.17.12.1
+dns-server 172.17.18.2
+exit
+
+!
+
+
+GATEWAY_SOUTH
+
+!
+ip dhcp excluded-address 172.17.14.1
+ip dhcp pool VOICE 
+network 172.17.14.0 255.255.255.0
+default-router 172.17.14.1
+option 150 ip 172.17.14.1
+exit
+
+
+ip dhcp excluded-address 172.17.16.1 172.17.16.19
+ip dhcp pool DATA20 
+network 172.17.16.0 255.255.252.0
+default-router 172.17.16.1
+dns-server 172.17.18.2
+exit
+
+!
+
+ISP_ROUTER, Point to Point & VPN ROUTERS Configurations
+
+ISP_ROUTER
+
+!
+interface Serial0/0/0
+ ip address 10.1.1.21 255.255.255.252
+ clock rate 64000
+
+interface Serial0/0/1
+ ip address 10.1.1.25 255.255.255.252
+ clock rate 64000
+
+interface Serial0/1/0
+ ip address 10.1.1.17 255.255.255.252
+ clock rate 64000
+
+interface Serial0/1/1
+ ip address 10.1.1.29 255.255.255.252
+ clock rate 64000
+!
+
+Point-to-Point (P2P) Configuration
+
+GATEWAY_FREETOWN
+
+!
+en
+conf t
+int fa0/0
+ip add 10.1.1.1 255.255.255.252
+no shut
+exit
+!
+
+GATEWAY_NORTH
+
+!
+en
+conf t
+int fa0/0
+ip add 10.1.1.5 255.255.255.252
+no shut
+exit
+!
+
+GATEWAY_EAST
+
+!
+en
+conf t
+int fa0/0
+ip add 10.1.1.9 255.255.255.252
+no shut
+exit
+!
+
+GATEWAY_SOUTH
+
+!
+en
+conf t
+int fa0/0
+ip add 10.1.1.13 255.255.255.252
+no shut
+exit
+!
+
+VPN_R1
+
+en
+conf t
+hostname VPN_R1
+int se0/1/0
+ip add 10.1.1.18 255.255.255.252
+no shut
+
+int g0/0
+ip add 10.1.1.2 255.255.255.252
+no shut
+!
+
+VPN_R2
+en
+conf t
+hostname VPN_R2
+int se0/0/0
+ip add 10.1.1.22 255.255.255.252
+no shut
+
+int g0/0
+ip add 10.1.1.6 255.255.255.252
+no shut
+!
+
+VPN_R3
+
+!
+en
+conf t
+hostname VPN_R3
+int se0/0/1
+ip add 10.1.1.26 255.255.255.252
+no shut
+exit
+
+int g0/0
+ip add 10.1.1.10 255.255.255.252
+no shut
+!
+
+VPN_R4
+
+!
+en
+conf t
+host VPN_R4
+int se0/1/1
+ip add 10.1.1.30 255.255.255.252
+no shut
+exit
+
+int g0/0
+ip add 10.1.1.14 255.255.255.252
+no shut
+!
+
+
+ROUTING 
+
+GATEWAY_FREETOWN
+
+ISP ROUTER
+!
+en
+conf t
+router rip
+version 2
+no auto-summary
+network 10.0.0.0
+!
+!
+en
+conf t
+router rip
+version 2
+no auto-summary
+network 10.0.0.0
+network 172.17.0.0
+!
+
+GATEWAY_NORTH
+!
+en
+conf t
+router rip
+version 2
+no auto-summary
+network 10.0.0.0
+network 172.17.0.0
+!
+
+GATEWAY_EAST
+
+!
+en
+conf t
+router rip
+version 2
+no auto-summary
+network 10.0.0.0
+network 172.17.0.0
+!
+
+GATEWAY_SOUTH
+
+!
+en
+conf t
+router rip
+version 2
+no auto-summary
+network 10.0.0.0
+network 172.17.0.0
+!
+
+VPN_R1
+!
+en
+conf t
+router rip
+version 2
+no auto-summary
+network 10.0.0.0
+!
+
+
+VPN_R2
+!
+en
+conf t
+router rip
+version 2
+no auto-summary
+network 10.0.0.0
+!
+
+VPN_R3
+!
+en
+conf t
+router rip
+version 2
+no auto-summary
+network 10.0.0.0
+!
+
+
+VPN_R4 
+!
+en
+conf t
+router rip
+version 2
+no auto-summary
+network 10.0.0.0
+!
+
+TELEPHONY-SERVICE
+
+FREETOWN- NETWORK-TELEPHONY-SYSTEM
+
+!
+telephony-service
+max-ephone 2
+max-dn 3
+ip source-address 172.17.2.1 port 2000
+create cnf-files
+exit
+
+ephone 1
+mac-address 0003.E42E.AB57
+type 7960
+exit
+
+ephone 2
+mac-address 0090.0CC2.D9D8
+type 7960
+exit
+
+ephone-dn 1
+number 1001
+exit
+
+ephone-dn 2
+number 1002
+exit
+
+ephone 1
+button 1:1
+exit
+ephone 2
+button 1:2
+exit
+!
+
+NORTH-NETWORK-TELEPHONY-SYSTEM
+
+!
+telephony-service
+max-ephone 2
+max-dn 3
+ip source-address 172.17.6.1 port 2000
+create cnf-files
+exit
+
+ephone 1
+mac-address 00D0.BAD6.B40D
+type 7960
+exit
+
+ephone 2
+mac-address 0001.C7BC.A055
+type 7960
+exit
+
+ephone-dn 1
+number 2001
+exit
+
+ephone-dn 2
+number 2002
+exit
+
+ephone 1
+button 1:1
+exit
+
+ephone 2
+button 1:2
+exit
+do wr
+!
+
+EAST-NETWORK-TELEPHONY-SYSTEM
+!
+telephony-service
+max-ephone 2
+max-dn 3
+ip source-address 172.17.10.1 port 2000
+create cnf-files
+exit
+
+ephone 1
+mac-address 0001.C9CE.0155
+type 7960
+exit
+
+ephone 2
+mac-address 0030.F2DE.1306
+type 7960
+exit
+
+ephone-dn 1
+number 3001
+exit
+
+ephone-dn 2
+number 3002
+exit
+
+ephone 1
+button 1:1
+exit
+
+ephone 2
+button 1:2
+exit
+do wr
+!
+
+
+SOUTH-TELEPHONY-SYSTEM
+!
+telephony-service
+max-ephone 2
+max-dn 3
+ip source-address 172.17.14.1 port 2000
+create cnf-files
+exit
+
+ephone 1
+mac-address 000A.F3A1.2A01
+type 7960
+exit
+
+ephone 2
+mac-address 00D0.BCC8.633C
+type 7960
+exit
+
+ephone-dn 1
+number 4001
+exit
+
+ephone-dn 2
+number 4002
+exit
+
+ephone 1
+button 1:1
+exit
+
+ephone 2
+button 1:2
+exit
+do wr
+!
+
+DIAL-PLAN
+
+GATEWAY_FREETOWN_DIAL_PLAN
+
+!
+dial-peer voice 2000 voip
+destination-pattern 2...
+session target ipv4:172.17.6.1
+exit
+
+dial-peer voice 3000 voip
+destination-pattern 3...
+session target ipv4:172.17.10.1
+exit
+
+dial-peer voice 4000 voip
+destination-pattern 4...
+session target ipv4:172.17.14.1
+exit
+do wr
+!
+
+
+GATEWAY_NORTH_DIAL_PLAN
+!
+dial-peer voice 1000 voip
+destination-pattern 1...
+session target ipv4:172.17.2.1
+exit
+
+dial-peer voice 3000 voip
+destination-pattern 3...
+session target ipv4:172.17.10.1
+exit
+
+dial-peer voice 4000 voip
+destination-pattern 4...
+session target ipv4:172.17.14.1
+exit
+do wr
+!
+
+
+GATEWAY_EAST_DIAL_PLAN
+
+!
+dial-peer voice 1000 voip
+destination-pattern 1...
+session target ipv4:172.17.2.1
+exit
+
+dial-peer voice 2000 voip
+destination-pattern 2...
+session target ipv4:172.17.6.1
+exit
+
+dial-peer voice 4000 voip
+destination-pattern 4...
+session target ipv4:172.17.14.1
+exit
+do wr
+!
+
+GATEWAY_SOUTH_DIAL_PLAN
+
+!
+dial-peer voice 1000 voip
+destination-pattern 1...
+session target ipv4:172.17.2.1
+exit
+
+dial-peer voice 2000 voip
+destination-pattern 2...
+session target ipv4:172.17.6.1
+exit
+
+dial-peer voice 3000 voip
+destination-pattern 3...
+session target ipv4:172.17.10.1
+exit
+do wr
+!
+
+
+HTML Syntax for the HTTP Server
+
+!
+<html>
+<center><font size='+2' color='amber'>National Social Security Insurance Trust (NASSIT) SL Ltd</font></center>
+
+<hr><marquee behavior = "alternate"><h2>Welcome to the National Social Security Insurance Trust (NASSIT) SL Ltd</h2></marquee>
+
+<center><br><a href='helloworld.html'>NASSIT-Home</a></center>
+
+<center><br><a href='copyrights.html'>NASSIT-Contact Addresses:</a></center>
+
+<center><br><a href='image.html'>NASSIT-Vacancy Announcement-Sierra Leone</a></center>
+
+<center><br><a href='cscoptlogo177x111.jpg'>Follow Us On Facebook</a></center>
+</html>
+!                         
+
+IPSec VPN Configurations
+
+Enable Security Licenses
+
+!
+license boot module c1900 technology-package securityk9
+!
+VPN_R1
+!
+access-list 100 permit ip 172.17.4.0 0.0.0.255 172.17.8.0 0.0.0.255 
+access-list 100 permit ip 172.17.18.0 0.0.0.255 172.17.8.0 0.0.0.255 
+access-list 100 permit ip 172.17.2.0 0.0.0.255 172.17.6.0 0.0.0.255 
+!
+ISAKMP Policy Phase I
+
+!
+crypto isakmp policy 10
+encryption aes 256
+authentication pre-share
+group 5
+crypto isakmp key vpn address 10.1.1.22
+
+!
+
+ISAKMP Policy Phase II
+
+!
+crypto ipsec transform-set VPN-P2 esp-aes esp-sha-hmac
+crypto map VPN-MAP 10 ipsec-isakmp
+description VPN connection to VPN_R2
+set peer 10.1.1.22
+set transform-set VPN-P2
+match address 100
+int se0/1/0
+crypto map VPN-MAP
+!
+
+
+VPN_R2
+
+!
+access-list 100 permit ip 172.17.8.0 0.0.0.255 172.17.4.0 0.0.0.255
+access-list 100 permit ip 172.17.8.0 0.0.0.255 172.17.18.0 0.0.0.255
+access-list 100 permit ip 172.17.6.0 0.0.0.255 172.17.2.0 0.0.0.255
+
+!
+ISAKMP Policy Phase I
+
+!
+crypto isakmp policy 10
+encryption aes 256
+authentication pre-share
+group 5
+crypto isakmp key vpn address 10.1.1.18
+!
+
+
+ISAKMP Policy Phase II
+
+!
+crypto ipsec transform-set VPN-P2 esp-aes esp-sha-hmac
+crypto map VPN-MAP 10 ipsec-isakmp
+description VPN connection to VPN_R1
+set peer 10.1.1.18
+set transform-set VPN-P2
+match address 100
+int se0/0/0
+crypto map VPN-MAP
+!
+
+
+
+
+
+
+
